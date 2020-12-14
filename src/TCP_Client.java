@@ -1,68 +1,85 @@
 /*
- * 1. Sử dụng kỹ thuật lập trình TCP Socket viết chương trình trao đổi dữ liệu giữa 2 máy Server và Client 
- * thực hiện công việc sau: 
- * - Thiết lập kết nối giữa 2 máy tính trên địa chỉ 192.168.0.1 sử dụng cổng 2015. 
- * - Khi Client kết nối với Server màn hình Server hiện thông báo “CLIENT CONNECTED”, 
- * màn hình Client hiện thông báo “CONNECTED TO SERVER” - Thực hiện trao đổi dữ liệu giữa Client và Server như sau: Client gửi thông điệp bất kỳ, màn hình Server hiển thị “CLIENT: ”, Server gửi lại thông điệp đã nhận được cho Client dưới dạng ký tự hoa, nàm hình Client hiển thị “SEREVER: ” 
- * - Khi Client gửi thông điệp “EXIT” Client và Server kết thúc hoạt động
+ * 1. Sá»­ dá»¥ng ká»¹ thuáº­t láº­p trÃ¬nh TCP Socket viáº¿t chÆ°Æ¡ng trÃ¬nh trao Ä‘á»•i dá»¯ liá»‡u giá»¯a 2 mÃ¡y Server vÃ  Client 
+ * thá»±c hiá»‡n cÃ´ng viá»‡c sau: 
+ * - Thiáº¿t láº­p káº¿t ná»‘i giá»¯a 2 mÃ¡y tÃ­nh trÃªn Ä‘á»‹a chá»‰ 192.168.0.1 sá»­ dá»¥ng cá»•ng 2015. 
+ * - Khi Client káº¿t ná»‘i vá»›i Server mÃ n hÃ¬nh Server hiá»‡n thÃ´ng bÃ¡o â€œCLIENT CONNECTEDâ€�, 
+ * mÃ n hÃ¬nh Client hiá»‡n thÃ´ng bÃ¡o â€œCONNECTED TO SERVERâ€� - Thá»±c hiá»‡n trao Ä‘á»•i dá»¯ liá»‡u giá»¯a Client vÃ  Server nhÆ° sau: Client gá»­i thÃ´ng Ä‘iá»‡p báº¥t ká»³, mÃ n hÃ¬nh Server hiá»ƒn thá»‹ â€œCLIENT: â€�, Server gá»­i láº¡i thÃ´ng Ä‘iá»‡p Ä‘Ã£ nháº­n Ä‘Æ°á»£c cho Client dÆ°á»›i dáº¡ng kÃ½ tá»± hoa, nÃ m hÃ¬nh Client hiá»ƒn thá»‹ â€œSEREVER: â€� 
+ * - Khi Client gá»­i thÃ´ng Ä‘iá»‡p â€œEXITâ€� Client vÃ  Server káº¿t thÃºc hoáº¡t Ä‘á»™ng
  * 
  * */
-package TCP_Socket;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
+
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 public class TCP_Client extends JFrame {
 
 	private JPanel contentPane;
-	private static Socket socket;
+
 	private static JLabel lbNoiDungNhan;
 	private static final String ADDRESS = "127.0.0.1";
 	private static final int IP = 3000;
 	private static JLabel lblInfo;
 	private JTextPane txtNoiDung;
+	
+	private static Socket socket;
+	private static DataInputStream dataIn;
+	private static DataOutputStream dataOut;
 
 	/**
 	 * Launch the application.
 	 */
+	public TCP_Client() {
+		try {
+			socket = new Socket(ADDRESS,IP);
+			dataIn = new DataInputStream(socket.getInputStream());
+			dataOut = new DataOutputStream (socket.getOutputStream());
+		}catch(Exception e) {}
+	}
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try 
-				{
-					TCP_Client frame = new TCP_Client();
-					frame.setVisible(true);
-					Socket socket = new Socket(ADDRESS,IP);
-					lblInfo.setText(ADDRESS+":"+IP);
-				} 
-				catch (Exception e) 
-				{
-					e.printStackTrace();
-				} 				
+		try {
+			TCP_Client frame = new TCP_Client();
+			frame.initFrame();
+			frame.setVisible(true);
+			
+			while(true) {
+				String str = dataIn.readUTF();
+				if(str.equals("q")) {
+					break;
+				}
+				System.out.println(str);
+				lbNoiDungNhan.setText(str);
 			}
-		});
+			
+		}catch(Exception e) {
+			
+		}finally {
+			try {
+			dataOut.close();
+			dataIn.close();
+			socket.close();
+			}catch(Exception e) {}
+		}
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public TCP_Client() {
+	
+	public void initFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -82,7 +99,7 @@ public class TCP_Client extends JFrame {
 		gbc_lblTcpClient.gridy = 0;
 		contentPane.add(lblTcpClient, gbc_lblTcpClient);
 		
-		JLabel lblNiDungGi = new JLabel("Nội dung gửi ");
+		JLabel lblNiDungGi = new JLabel("Ná»™i dung gá»­i ");
 		GridBagConstraints gbc_lblNiDungGi = new GridBagConstraints();
 		gbc_lblNiDungGi.anchor = GridBagConstraints.EAST;
 		gbc_lblNiDungGi.insets = new Insets(0, 0, 5, 5);
@@ -99,18 +116,14 @@ public class TCP_Client extends JFrame {
 		gbc_textPane.gridy = 1;
 		contentPane.add(txtNoiDung, gbc_textPane);
 		
-		JButton btnGi = new JButton("Gửi");
+		JButton btnGi = new JButton("Gá»­i");
 		btnGi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				try {
-					DataOutputStream dataOut = new DataOutputStream(socket.getOutputStream());
 					dataOut.writeUTF(txtNoiDung.getText());
 					dataOut.flush();
-					dataOut.close();
-					socket.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -128,7 +141,7 @@ public class TCP_Client extends JFrame {
 		gbc_btnGi.gridy = 7;
 		contentPane.add(btnGi, gbc_btnGi);
 		
-		lbNoiDungNhan = new JLabel("Nội dung nhận được ");
+		lbNoiDungNhan = new JLabel("Ná»™i dung nháº­n Ä‘Æ°á»£c: ");
 		GridBagConstraints gbc_lblNiDungNhn = new GridBagConstraints();
 		gbc_lblNiDungNhn.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNiDungNhn.gridx = 1;

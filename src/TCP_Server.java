@@ -1,86 +1,86 @@
-package TCP_Socket;
 
-import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Scanner;
-
-import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 
 public class TCP_Server extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JLabel lblContent;
+	private static JLabel lblContent;
 	private JButton btnGui;
 	private JLabel lblTcpServer;
-	private JLabel lbNoiDung;
-	private ServerSocket serverSocket;
+	private static JLabel lbNoiDung;
 	private JTextPane textPane;
 	private static final String ADDRESS = "127.0.0.1";
 	private static final int IP = 3000;
 	private static JLabel lblInfo;
-
+	
+	private static  ServerSocket serverSocket;
+	private static Socket socket;
+	private static DataInputStream dataIn;
+	private static DataOutputStream dataOut;
 	/**
 	 * Launch the application.
 	 */
+	public TCP_Server() {
+		try {
+			System.out.println("Cho ket noi");
+			serverSocket = new ServerSocket(IP);
+			socket = serverSocket.accept();
+			System.out.println("Client ket noi");
+			dataOut = new DataOutputStream (socket.getOutputStream());
+			dataIn = new DataInputStream(socket.getInputStream());
+		}catch(Exception e) {}
+	}
+	
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TCP_Server frame = new TCP_Server();
-					frame.setVisible(true);
-					lblInfo.setText(ADDRESS+":"+IP);
-					ServerSocket serverSocket = new ServerSocket(IP);
-					 //chờ yêu cầu từ client
-				    //Tạo DataoutputStream, nối tới socket
-					while(true)
-					{
-						Socket socket;
-						socket = serverSocket.accept();
-						DataOutputStream dataOut = new DataOutputStream (socket.getOutputStream());
-						DataInputStream dataIn = new DataInputStream(socket.getInputStream());
-						// Đọc thông tin từ socket trả về
-						String str = dataIn.readUTF();
-						if(str.equals("q"))
-						{
-							break;
-						}
-						System.out.println(str);
-						String dataSend = "2";
-						dataOut.writeUTF(dataSend);
-						dataOut.flush();
-						dataOut.close();
-						dataIn.close();
-						socket.close();
-					}
-					// Đóng các kết nối tới socket
-				} catch (Exception e) {
-					e.printStackTrace();
+		try {
+			TCP_Server frame = new TCP_Server();
+			frame.initFrame();
+			frame.setVisible(true);
+			//lblInfo.setText(ADDRESS+":"+IP);
+			
+			
+			while(true) {
+				String str = dataIn.readUTF();
+				if(str.equals("q")) {
+					break;
 				}
+				lbNoiDung.setText(str);
 			}
-		});
+			dataOut.close();
+			dataIn.close();
+			socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public TCP_Server() {
+	public void initFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -109,7 +109,7 @@ public class TCP_Server extends JFrame {
 		gbc_textPane.gridy = 1;
 		contentPane.add(textPane, gbc_textPane);
 		
-		lblContent = new JLabel("Nội dung gửi");
+		lblContent = new JLabel("Ná»™i dung gá»­i");
 		GridBagConstraints gbc_lblContent = new GridBagConstraints();
 		gbc_lblContent.anchor = GridBagConstraints.EAST;
 		gbc_lblContent.insets = new Insets(0, 0, 5, 5);
@@ -117,21 +117,25 @@ public class TCP_Server extends JFrame {
 		gbc_lblContent.gridy = 2;
 		contentPane.add(lblContent, gbc_lblContent);
 		
-		lblInfo = new JLabel("info");
-		GridBagConstraints gbc_lblInfo = new GridBagConstraints();
-		gbc_lblInfo.insets = new Insets(0, 0, 5, 5);
-		gbc_lblInfo.gridx = 0;
-		gbc_lblInfo.gridy = 3;
-		contentPane.add(lblInfo, gbc_lblInfo);
-		
-		btnGui = new JButton("Gửi");
+		btnGui = new JButton("Gá»­i");
+		btnGui.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					dataOut.writeUTF(textPane.getText());
+					dataOut.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		GridBagConstraints gbc_btnG = new GridBagConstraints();
 		gbc_btnG.insets = new Insets(0, 0, 5, 0);
 		gbc_btnG.gridx = 1;
 		gbc_btnG.gridy = 6;
 		contentPane.add(btnGui, gbc_btnG);
 		
-		lbNoiDung = new JLabel("Nội dung");
+		lbNoiDung = new JLabel("Ná»™i dung");
 		GridBagConstraints gbc_lblNiDung = new GridBagConstraints();
 		gbc_lblNiDung.gridx = 1;
 		gbc_lblNiDung.gridy = 7;
