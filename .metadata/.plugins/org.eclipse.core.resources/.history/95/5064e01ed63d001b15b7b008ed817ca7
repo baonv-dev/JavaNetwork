@@ -1,0 +1,166 @@
+package TCP_Socket;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.JTextField;
+import java.awt.Insets;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+public class TCP_Server extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField txtDiaChi;
+	private JLabel lblPort;
+	private JTextField txtPort;
+	private JButton btnThietLapKetNoi;
+	private JLabel lblContent;
+	private JTextField txtNoiDung;
+	private JButton btnGui;
+	private JLabel lblTcpServer;
+	private JLabel lbNoiDung;
+	private ServerSocket serverSocket;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					TCP_Server frame = new TCP_Server();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public TCP_Server() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
+		
+		lblTcpServer = new JLabel("TCP SERVER ");
+		GridBagConstraints gbc_lblTcpServer = new GridBagConstraints();
+		gbc_lblTcpServer.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTcpServer.gridx = 1;
+		gbc_lblTcpServer.gridy = 0;
+		contentPane.add(lblTcpServer, gbc_lblTcpServer);
+		
+		JLabel lblAddress = new JLabel("Địa chỉ IP");
+		GridBagConstraints gbc_lblAddress = new GridBagConstraints();
+		gbc_lblAddress.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAddress.anchor = GridBagConstraints.EAST;
+		gbc_lblAddress.gridx = 0;
+		gbc_lblAddress.gridy = 1;
+		contentPane.add(lblAddress, gbc_lblAddress);
+		
+		txtDiaChi = new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.insets = new Insets(0, 0, 5, 0);
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 1;
+		gbc_textField.gridy = 1;
+		contentPane.add(txtDiaChi, gbc_textField);
+		txtDiaChi.setColumns(10);
+		
+		lblPort = new JLabel("Cổng kết nối: ");
+		GridBagConstraints gbc_lblPort = new GridBagConstraints();
+		gbc_lblPort.anchor = GridBagConstraints.EAST;
+		gbc_lblPort.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPort.gridx = 0;
+		gbc_lblPort.gridy = 2;
+		contentPane.add(lblPort, gbc_lblPort);
+		
+		txtPort = new JTextField();
+		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_1.gridx = 1;
+		gbc_textField_1.gridy = 2;
+		contentPane.add(txtPort, gbc_textField_1);
+		txtPort.setColumns(10);
+		
+		btnThietLapKetNoi = new JButton("Thiết lập kết nối");
+		btnThietLapKetNoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					int ip = Integer.parseInt(txtPort.getText());
+					serverSocket = new ServerSocket(ip);
+					lbNoiDung.setText("Đã thiết lập kết nối");
+					
+					Socket socket = serverSocket.accept();
+					DataInputStream dataIn = new DataInputStream(socket.getInputStream());
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		GridBagConstraints gbc_btnThitLpKt = new GridBagConstraints();
+		gbc_btnThitLpKt.insets = new Insets(0, 0, 5, 0);
+		gbc_btnThitLpKt.gridx = 1;
+		gbc_btnThitLpKt.gridy = 3;
+		contentPane.add(btnThietLapKetNoi, gbc_btnThitLpKt);
+		
+		lblContent = new JLabel("Nội dung gửi");
+		GridBagConstraints gbc_lblContent = new GridBagConstraints();
+		gbc_lblContent.anchor = GridBagConstraints.EAST;
+		gbc_lblContent.insets = new Insets(0, 0, 5, 5);
+		gbc_lblContent.gridx = 0;
+		gbc_lblContent.gridy = 4;
+		contentPane.add(lblContent, gbc_lblContent);
+		
+		txtNoiDung = new JTextField();
+		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
+		gbc_textField_2.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_2.gridx = 1;
+		gbc_textField_2.gridy = 4;
+		contentPane.add(txtNoiDung, gbc_textField_2);
+		txtNoiDung.setColumns(10);
+		
+		btnGui = new JButton("Gửi");
+		GridBagConstraints gbc_btnG = new GridBagConstraints();
+		gbc_btnG.insets = new Insets(0, 0, 5, 0);
+		gbc_btnG.gridx = 1;
+		gbc_btnG.gridy = 5;
+		contentPane.add(btnGui, gbc_btnG);
+		
+		lbNoiDung = new JLabel("Nội dung");
+		GridBagConstraints gbc_lblNiDung = new GridBagConstraints();
+		gbc_lblNiDung.gridx = 1;
+		gbc_lblNiDung.gridy = 6;
+		contentPane.add(lbNoiDung, gbc_lblNiDung);
+	}
+
+}

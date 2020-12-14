@@ -1,0 +1,134 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import javax.swing.JTextField;
+import java.awt.Insets;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JProgressBar;
+
+public class Test extends JFrame {
+
+	private int i =0;
+	private JPanel contentPane;
+	private JTextField txtDiaChi;
+	private JLabel lblCngKtNi;
+	private JTextField txtCongKetNoi;
+	private JButton btnKtNi;
+	private JLabel lbTrangThai;
+	private JLabel lblTcpIp;
+	private static JProgressBar progressBar;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Test frame = new Test();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+	/**
+	 * Create the frame.
+	 */
+	public Test() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{440, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 15, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+//		gbc_lblTcpIp.insets = new Insets(0, 0, 5, 0);
+		contentPane.setLayout(gbl_contentPane);
+		
+		lblTcpIp = new JLabel("TCP IP");
+		GridBagConstraints gbc_lblTcpIp = new GridBagConstraints();
+		gbc_lblTcpIp.gridx = 0;
+		gbc_lblTcpIp.gridy = 0;
+		contentPane.add(lblTcpIp, gbc_lblTcpIp);
+		
+		JLabel lblNhpaCh = new JLabel("Nhập địa chỉ cổng kết nối");
+		GridBagConstraints gbc_lblNhpaCh = new GridBagConstraints();
+		gbc_lblNhpaCh.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNhpaCh.anchor = GridBagConstraints.NORTH;
+		gbc_lblNhpaCh.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblNhpaCh.gridx = 0;
+		gbc_lblNhpaCh.gridy = 1;
+		contentPane.add(lblNhpaCh, gbc_lblNhpaCh);
+		
+		txtDiaChi = new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.insets = new Insets(0, 0, 5, 0);
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 0;
+		gbc_textField.gridy = 2;
+		contentPane.add(txtDiaChi, gbc_textField);
+		txtDiaChi.setColumns(10);
+		
+		lblCngKtNi = new JLabel("Cổng kết nối");
+		GridBagConstraints gbc_lblCngKtNi = new GridBagConstraints();
+		gbc_lblCngKtNi.insets = new Insets(0, 0, 5, 0);
+		gbc_lblCngKtNi.anchor = GridBagConstraints.WEST;
+		gbc_lblCngKtNi.gridx = 0;
+		gbc_lblCngKtNi.gridy = 3;
+		contentPane.add(lblCngKtNi, gbc_lblCngKtNi);
+		
+		txtCongKetNoi = new JTextField();
+		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_1.gridx = 0;
+		gbc_textField_1.gridy = 4;
+		contentPane.add(txtCongKetNoi, gbc_textField_1);
+		txtCongKetNoi.setColumns(10);
+		
+		btnKtNi = new JButton("Kết nối");
+		btnKtNi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.out.print("Địa chỉ cần kết nối:"+txtDiaChi.getText()+":"+txtCongKetNoi.getText());
+				lbTrangThai.setText("Connected!");
+				progressBar.setValue(i+2);
+				progressBar.setString(i+2);
+			}
+		});
+		GridBagConstraints gbc_btnKtNi = new GridBagConstraints();
+		gbc_btnKtNi.insets = new Insets(0, 0, 5, 0);
+		gbc_btnKtNi.gridx = 0;
+		gbc_btnKtNi.gridy = 5;
+		contentPane.add(btnKtNi, gbc_btnKtNi);
+		
+		lbTrangThai = new JLabel("Trạng thái kết nối ");
+		GridBagConstraints gbc_lblTrngThiKt = new GridBagConstraints();
+		gbc_lblTrngThiKt.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTrngThiKt.gridx = 0;
+		gbc_lblTrngThiKt.gridy = 6;
+		contentPane.add(lbTrangThai, gbc_lblTrngThiKt);
+		
+		progressBar = new JProgressBar();
+		GridBagConstraints gbc_progressBar = new GridBagConstraints();
+		gbc_progressBar.gridx = 0;
+		gbc_progressBar.gridy = 7;
+		contentPane.add(progressBar, gbc_progressBar);
+	}
+
+}

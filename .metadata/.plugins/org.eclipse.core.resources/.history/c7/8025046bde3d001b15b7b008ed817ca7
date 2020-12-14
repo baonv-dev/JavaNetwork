@@ -1,0 +1,143 @@
+package TCP_Socket;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.JTextField;
+import java.awt.Insets;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import javax.swing.JTextPane;
+
+public class TCP_Server extends JFrame {
+
+	private JPanel contentPane;
+	private JLabel lblContent;
+	private JButton btnGui;
+	private JLabel lblTcpServer;
+	private JLabel lbNoiDung;
+	private ServerSocket serverSocket;
+	private JTextPane textPane;
+	private static final String ADDRESS = "127.0.0.1";
+	private static final int IP = 3000;
+	private static JLabel lblInfo;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					TCP_Server frame = new TCP_Server();
+					frame.setVisible(true);
+					lblInfo.setText(ADDRESS+":"+IP);
+					ServerSocket serverSocket = new ServerSocket(IP);
+					 //chờ yêu cầu từ client
+					
+					
+				    //Tạo DataoutputStream, nối tới socket
+					DataOutputStream dataOut = new DataOutputStream (socket.getOutputStream());
+					DataInputStream dataIn = new DataInputStream(socket.getInputStream());
+					Socket socket;
+					while(true)
+					{
+						socket = serverSocket.accept()
+						// Đọc thông tin từ socket trả về
+						String str = dataIn.readUTF();
+						if(str.equals("q"))
+						{
+							break;
+						}
+						System.out.println(str);
+						String dataSend = sc.nextLine();
+						dataOut.writeUTF(dataSend);
+						dataOut.flush();
+					}
+					// Đóng các kết nối tới socket
+					dataOut.close();
+					dataIn.close();
+					socket.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public TCP_Server() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
+		
+		lblTcpServer = new JLabel("TCP SERVER ");
+		GridBagConstraints gbc_lblTcpServer = new GridBagConstraints();
+		gbc_lblTcpServer.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTcpServer.gridx = 1;
+		gbc_lblTcpServer.gridy = 0;
+		contentPane.add(lblTcpServer, gbc_lblTcpServer);
+		
+		textPane = new JTextPane();
+		GridBagConstraints gbc_textPane = new GridBagConstraints();
+		gbc_textPane.gridheight = 4;
+		gbc_textPane.insets = new Insets(0, 0, 5, 0);
+		gbc_textPane.fill = GridBagConstraints.BOTH;
+		gbc_textPane.gridx = 1;
+		gbc_textPane.gridy = 1;
+		contentPane.add(textPane, gbc_textPane);
+		
+		lblContent = new JLabel("Nội dung gửi");
+		GridBagConstraints gbc_lblContent = new GridBagConstraints();
+		gbc_lblContent.anchor = GridBagConstraints.EAST;
+		gbc_lblContent.insets = new Insets(0, 0, 5, 5);
+		gbc_lblContent.gridx = 0;
+		gbc_lblContent.gridy = 2;
+		contentPane.add(lblContent, gbc_lblContent);
+		
+		lblInfo = new JLabel("info");
+		GridBagConstraints gbc_lblInfo = new GridBagConstraints();
+		gbc_lblInfo.insets = new Insets(0, 0, 5, 5);
+		gbc_lblInfo.gridx = 0;
+		gbc_lblInfo.gridy = 3;
+		contentPane.add(lblInfo, gbc_lblInfo);
+		
+		btnGui = new JButton("Gửi");
+		GridBagConstraints gbc_btnG = new GridBagConstraints();
+		gbc_btnG.insets = new Insets(0, 0, 5, 0);
+		gbc_btnG.gridx = 1;
+		gbc_btnG.gridy = 6;
+		contentPane.add(btnGui, gbc_btnG);
+		
+		lbNoiDung = new JLabel("Nội dung");
+		GridBagConstraints gbc_lblNiDung = new GridBagConstraints();
+		gbc_lblNiDung.gridx = 1;
+		gbc_lblNiDung.gridy = 7;
+		contentPane.add(lbNoiDung, gbc_lblNiDung);
+	}
+
+}
